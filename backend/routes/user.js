@@ -143,3 +143,11 @@ router.post(
     }
   }
 );
+router.put("/update-user", auth, async (req, res) => {
+    try {
+      const response = await User.updateOne(req.user.id, req.body);
+      res.json(response);
+    } catch (e) {
+      res.send({ message: "There was an error with updating your information." });
+    }
+  });
