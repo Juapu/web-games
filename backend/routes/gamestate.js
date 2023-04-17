@@ -12,11 +12,11 @@ const User = require("../models/Gamestate");
 const Gamestate = require("../models/Gamestate");
 
 /**
- * @method - PUT
+ * @method - POST
  * @param - /create
  * @description - Create new GameState
  */
-router.put("/create", 
+router.post("/create", 
     [check("gamestate", "Please input a gamestate").not().isEmpty()],
     async (req, res) => {
         // Validates proper JSON input
@@ -50,7 +50,7 @@ router.put("/create",
             });
             await game.save();
 
-            res.status(201).send("Gamestate created");
+            res.status(201).send({ message: "Gamestate created"});
 
         } catch (err) {
         console.log(err.message);
@@ -60,11 +60,11 @@ router.put("/create",
 );
 
 /**
- * @method - POST
+ * @method - PUT
  * @param - /update
  * @description - Update gamestate using its gameid
  */
-router.post("/update", [], 
+router.put("/update", [], 
     async (req, res) => {
 
         const gamename = req.body.gamename;
