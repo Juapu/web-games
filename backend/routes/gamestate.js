@@ -50,10 +50,41 @@ router.put("/create",
             });
             await game.save();
 
+            res.status(201).send("Gamestate created");
 
         } catch (err) {
         console.log(err.message);
         res.status(500).send("Error in creating gamestate");
+        }
+    }
+);
+
+/**
+ * @method - POST
+ * @param - /update
+ * @description - Update gamestate using its gameid
+ */
+router.post("/update", [], 
+    async (req, res) => {
+
+        const gamename = req.body.gamename;
+        const gameid = req.body.gameid;
+        const gameState = req.body.gameState;
+        const serializedgame = JSON.stringify(gameState);
+
+        try {
+            const updatedGameState = {
+                $set: {
+                    gamename: gamename,
+                    serializedgame: serializedgame,
+                    gameid: gameid,
+                }
+            };
+            const response = await Gamestate.updateOne(req.body.gameid, updatedGameState);
+            res.json(response);
+
+        } catch (err) {
+            res.send({ message: "Error with updating gamestate"});
         }
     }
 );
