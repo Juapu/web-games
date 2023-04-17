@@ -151,3 +151,5 @@ router.put("/update-user", auth, async (req, res) => {
       res.send({ message: "There was an error with updating your information." });
     }
   });
+
+module.exports = router;

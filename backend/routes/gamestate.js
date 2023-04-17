@@ -16,7 +16,6 @@ const Gamestate = require("../models/Gamestate");
  * @param - /create
  * @description - Create new GameState
  */
-
 router.put("/create", 
     [check("gamestate", "Please input a gamestate").not().isEmpty()],
     async (req, res) => {
@@ -62,5 +61,31 @@ router.put("/create",
 /**
  * @method - GET
  * @param - /get
- * @description - Fetch a gamestate from its gameid
+ * @description - Fetch a gamestate from its gameid, returns gameState
  */
+router.get("/get", [check("gameid").not().isEmpty()],
+    async (req, res) => {
+
+        // gameid is a URL parameter and not part of the JSON body
+        const gameid = req.query.gameid;
+        try {
+            let game = await Gamestate.findOne({gameid});
+            if (!game) {
+                return res.status(400).json({ message: "Game does not exist"});
+            }
+            // Deserialize game into readable game for frontend
+            const gameState = JSON.parse(game);
+            // Send gameid and gameState
+            res.status(200).json({
+                gameState: gameState,
+                gameid: gameid,
+            });
+
+        } catch {
+            console.error(e);
+            res.status(500).json({ message: "Server error"});
+        }
+    }
+);
+
+module.exports = router;
