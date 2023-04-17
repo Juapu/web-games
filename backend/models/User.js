@@ -10,11 +10,11 @@ const UserSchema = mongoose.Schema({
     required: true,
   },
   wins: {
-    type: int,
+    type: Number,
     required: true,
   },
   losses: {
-    type: int,
+    type: Number,
     required: true,
   },
     

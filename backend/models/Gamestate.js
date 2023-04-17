@@ -10,7 +10,7 @@ const GamestateSchema = mongoose.Schema({
     required: true,
   },
   gameid: {
-    type: int,
+    type: String,
     required: true,
   },
   });
