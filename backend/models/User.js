@@ -17,7 +17,10 @@ const UserSchema = mongoose.Schema({
     type: Number,
     required: true,
   },
-    
+  games: {
+    type: [String],
+    default: [],
+  },
   });
   
 
