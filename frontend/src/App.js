@@ -1,4 +1,4 @@
-import '../stylesheets/App.css';
+import './stylesheets/App.css';
 
 function App() {
   return (
@@ -6,6 +6,7 @@ function App() {
       <header className="App-header">
 
       </header>
+      
     </div>
   );
 }
