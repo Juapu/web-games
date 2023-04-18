@@ -17,7 +17,7 @@ const Gamestate = require("../models/Gamestate");
  * @description - Create new GameState
  */
 router.post("/create", 
-    [check("gamestate", "Please input a gamestate").not().isEmpty()],
+    [],
     async (req, res) => {
         // Validates proper JSON input
         const errors = validationResult(req);
@@ -33,6 +33,9 @@ router.post("/create",
         // Serialize gameState
         const gameState = req.body.gameState;
         const serializedgame = JSON.stringify(gameState); // OK since no functions serialized
+
+        //TODO Update the User games to append the game id
+
         try {
             let game = await Gamestate.findOne({
                 gameid,
@@ -50,7 +53,10 @@ router.post("/create",
             });
             await game.save();
 
-            res.status(201).send({ message: "Gamestate created"});
+            res.status(201).send({ 
+                message: "Gamestate created",
+                gameid: gameid,
+            });
 
         } catch (err) {
         console.log(err.message);
@@ -104,16 +110,19 @@ router.get("/get", [check("gameid").not().isEmpty()],
             if (!game) {
                 return res.status(400).json({ message: "Game does not exist"});
             }
+            //TODO Fix game to be parseable
+            console.log(game);
             // Deserialize game into readable game for frontend
-            const gameState = JSON.parse(game);
+            const gameState = JSON.parse(game.toString());
+            
             // Send gameid and gameState
             res.status(200).json({
                 gameState: gameState,
                 gameid: gameid,
             });
 
-        } catch {
-            console.error(e);
+        } catch (e) {
+            console.log(e);
             res.status(500).json({ message: "Server error"});
         }
     }
