@@ -110,11 +110,9 @@ router.get("/get", [check("gameid").not().isEmpty()],
             if (!game) {
                 return res.status(400).json({ message: "Game does not exist"});
             }
-            //TODO Fix game to be parseable
-            console.log(game);
             // Deserialize game into readable game for frontend
-            const gameState = JSON.parse(game.toString());
-            
+            const jsonBody = JSON.parse(JSON.stringify(game));
+            const gameState = JSON.parse(jsonBody.serializedgame);
             // Send gameid and gameState
             res.status(200).json({
                 gameState: gameState,
