@@ -6,7 +6,8 @@ import { useState } from 'react';
 function TicTacToe() {
   return (
     <div className="tic-tac-toe">
-      <div className="tic-tac-toe-board">
+      <h1>Tic Tac Toe</h1>
+      <div className="center">
         <Board />
       </div>
     </div>

@@ -29,9 +29,13 @@ function Board() {
     status = 'Next player: ' + (xIsNext ? 'X' : 'O');
   }
 
+
+
   return (
     <>
       <div className="status">{status}</div>
+      <p>Player 1 (X)</p>
+      <p>Player 2 (O)</p>
       <div className="board-row">
         <Square value={squares[0]} onSquareClick={() => handleClick(0)} />
         <Square value={squares[1]} onSquareClick={() => handleClick(1)} />
