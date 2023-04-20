@@ -2,13 +2,10 @@ const express = require("express");
 const { check, validationResult } = require("express-validator");
 const { v4: uuidv4 } = require('uuid');
 
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
 const router = express.Router();
 const bodyParser = require('body-parser');
 const auth = require('../middleware/auth')
 
-const User = require("../models/Gamestate");
 const Gamestate = require("../models/Gamestate");
 
 /**
@@ -118,7 +115,6 @@ router.get("/get", [check("gameid").not().isEmpty()],
                 gameState: gameState,
                 gameid: gameid,
             });
-
         } catch (e) {
             console.log(e);
             res.status(500).json({ message: "Server error"});
