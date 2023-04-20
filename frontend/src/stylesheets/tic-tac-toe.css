@@ -40,11 +40,11 @@ ol, ul {
   background: #ddd;
 }
 
-.game {
+.tic-tac-toe {
   display: flex;
   flex-direction: row;
 }
 
-.game-info {
+.tic-tac-toe-info {
   margin-left: 20px;
 }
