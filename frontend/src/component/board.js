@@ -1,6 +1,7 @@
 import {React, useState} from 'react';
 import '../stylesheets/Board.css';
 import Square from './square';
+import Player from './player';
 
 
 function Board() {
@@ -30,12 +31,29 @@ function Board() {
   }
 
 
-
   return (
     <>
+      
       <div className="status">{status}</div>
-      <p>Player 1 (X)</p>
-      <p>Player 2 (O)</p>
+
+      <div className="displayPlayers">
+          <div className='player'>
+            <Player xIsNext={xIsNext} player="1" side="left"/>
+          </div>
+
+          <div className='player'>
+            <Player xIsNext={xIsNext} player="2" side="right"/> 
+          </div>
+          
+  
+ 
+    
+        
+        
+      </div>
+      
+   
+
       <div className="board-row">
         <Square value={squares[0]} onSquareClick={() => handleClick(0)} />
         <Square value={squares[1]} onSquareClick={() => handleClick(1)} />

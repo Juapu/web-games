@@ -1,0 +1,27 @@
+.waiting-player span{
+    
+    background-color: rgba(163, 163, 163, 0.5);
+    border-radius: 10px;
+    padding: 10px;
+    
+    
+}
+
+.active-player span{
+    
+    background-color: rgba(97, 90, 148, 0.5);
+    border-radius: 10px;
+    padding: 10px;
+    
+    
+}
+
+img {
+    margin: 15px;
+    width: 30px;
+}
+
+/* .left {
+    margin-right: 20px;
+} */
+
