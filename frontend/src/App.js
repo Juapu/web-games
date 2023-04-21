@@ -12,7 +12,11 @@ function App() {
       <Routes>
         <Route path="/" element={<Login />}/>
         <Route path="/create-account" element={<CreateAcc />}/>
-        <Route path="tic-tac-toe" element={<TicTacToe />}/>
+        <Route path="/tic-tac-toe" element={<TicTacToe />}>
+          
+        </Route>
+        
+        
       </Routes>
     </Router>
     

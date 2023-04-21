@@ -1,11 +1,17 @@
 import {React, useState} from 'react';
 import '../stylesheets/Board.css';
 import Square from './square';
+import axios from 'axios';
 
+const url = "http://localhost:4001/gamestate"
+
+// http://localhost:3000/tic-tac-toe?gameid=<gameid>
 
 function Board() {
   const [xIsNext, setXIsNext] = useState(true);
   const [squares, setSquares] = useState(Array(9).fill(null));
+
+  
 
   function handleClick(i) {
     if (calculateWinner(squares) || squares[i]) {
@@ -18,6 +24,27 @@ function Board() {
       nextSquares[i] = 'O';
     }
     setSquares(nextSquares);
+    
+    // update gamestate in database 
+    const jsonBody = {
+      gamename: "tic-tac-toe",
+      gameid: 0,
+      gameState: {
+        playerTurn: 1,
+        board: [],
+      }
+    }
+
+    const headers = {}
+
+    axios.put(url + `/update`, jsonBody, headers)
+      .then(function (response) {
+        console.log(response);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+
     setXIsNext(!xIsNext);
   }
 
