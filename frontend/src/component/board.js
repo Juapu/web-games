@@ -2,6 +2,7 @@ import {React, useState} from 'react';
 import '../stylesheets/Board.css';
 import Square from './square';
 import Player from './player';
+import axios from 'axios';
 
 
 function Board() {
@@ -20,6 +21,17 @@ function Board() {
     }
     setSquares(nextSquares);
     setXIsNext(!xIsNext);
+
+    // call to update gamestate
+    const jsonBody = {
+
+    };
+
+    axios.put(`http://localhost:4001/update`, jsonBody).then((body) => {
+      console.log("Updated successfully");
+    }, (err) => {
+      console.log("Error: ", err);
+    });
   }
 
   const winner = calculateWinner(squares);
