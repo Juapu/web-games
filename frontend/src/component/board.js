@@ -1,12 +1,30 @@
-import {React, useState} from 'react';
+import {React, useState, useEffect} from 'react';
 import '../stylesheets/Board.css';
 import Square from './square';
 import Player from './player';
+import axios from 'axios';
 
 
 function Board() {
   const [xIsNext, setXIsNext] = useState(true);
   const [squares, setSquares] = useState(Array(9).fill(null));
+
+  // Periodically retrieves latest board version from remote db
+  useEffect(() => {
+
+    function getLatestGamestate() {
+      const gameid = localStorage.getItem("gameid");
+      fetch(axios.get(`http://localhost:4001/gamestate/get?gameid=${gameid}`).then((body) => {
+        console.log(body);
+      }, (err) => {
+        console.log("Error: ", err);
+      }));
+    }
+    const interval = setInterval(() => getLatestGamestate(), 4000); // 4 seconds
+    return () => {
+      clearInterval(interval);
+    }
+  }, []);
 
   function handleClick(i) {
     if (calculateWinner(squares) || squares[i]) {
@@ -20,6 +38,23 @@ function Board() {
     }
     setSquares(nextSquares);
     setXIsNext(!xIsNext);
+
+    //TODO Check valid move before calling?
+    // call to update gamestate every time we change the state
+    const jsonBody = {
+      gamename: "tic-tac-toe",
+      gameid: localStorage.getItem("gameid"),
+      gameState: {
+        board: squares,
+        playerTurn: xIsNext ? 0 : 1, // Player 0 has 'X' and Player 1 has 'O'
+      }
+    };
+
+    axios.put(`http://localhost:4001/gamestate/update`, jsonBody).then((body) => {
+      console.log(body);
+    }, (err) => {
+      console.log("Error: ", err);
+    });
   }
 
   const winner = calculateWinner(squares);

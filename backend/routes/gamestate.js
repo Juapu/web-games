@@ -17,12 +17,12 @@ router.post("/create",
     [],
     async (req, res) => {
         // Validates proper JSON input
-        const errors = validationResult(req);
+        /* const errors = validationResult(req);
         if (!errors.isEmpty()) {
             return res.status(400).json({
                 errors: errors.array(),
             });
-        }
+        } */
 
         // Check if gameid not exists, create a new one
         const gamename = req.body.gamename;
