@@ -14,6 +14,7 @@ function TicTacToe() {
     },
   };
   axios.post(`http://localhost:4001/gamestate/create`, jsonBody).then((body) => {
+    localStorage.setItem("gameid", body.data.gameid);
     console.log(body.data.gameid);
   }, (err) => {
     console.log("Error: ", err);
