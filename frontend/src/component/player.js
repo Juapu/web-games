@@ -7,15 +7,15 @@ function Player({xIsNext, player, side}) {
     let icon;
     let playerLabel;
 
-    if (player == "1") {
+    if (player == "X") {
         icon = xIMG; 
     } else {
         icon = oIMG;
     }
 
-    if (xIsNext && player == "1") {
+    if (xIsNext && player == "X") {
         playerLabel = "active-player"
-    } else if (!xIsNext && player == "2") {
+    } else if (!xIsNext && player == "O") {
         playerLabel = "active-player"
     } else {
         playerLabel = "waiting-player"

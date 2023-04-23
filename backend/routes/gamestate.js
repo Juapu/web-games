@@ -83,10 +83,11 @@ router.put("/update", [],
                     gameid: gameid,
                 }
             };
-            const response = await Gamestate.updateOne(req.body.gameid, updatedGameState);
+            const response = await Gamestate.updateOne({gameid: req.body.gameid}, updatedGameState);
             res.json(response);
 
         } catch (err) {
+            console.log(err);
             res.send({ message: "Error with updating gamestate"});
         }
     }

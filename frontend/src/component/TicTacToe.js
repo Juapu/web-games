@@ -10,7 +10,7 @@ function TicTacToe() {
     gamename: "tic-tac-toe",
     gameState: {
       board: [],
-      playerTurn: 0, 
+      playerTurn: 'X', 
     },
   };
   axios.post(`http://localhost:4001/gamestate/create`, jsonBody).then((body) => {
@@ -20,6 +20,7 @@ function TicTacToe() {
     console.log("Error: ", err);
   });
 
+  
   return (
     <div className="tic-tac-toe">
       <h1>Tic-Tac-Toe</h1>

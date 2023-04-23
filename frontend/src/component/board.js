@@ -8,6 +8,8 @@ import axios from 'axios';
 function Board() {
   const [xIsNext, setXIsNext] = useState(true);
   const [squares, setSquares] = useState(Array(9).fill(null));
+  // variable storing last board state
+  const [prevSquares, setPrevSquares] = useState(Array(9).fill(null));
 
   // Periodically retrieves latest board version from remote db
   useEffect(() => {
@@ -15,7 +17,7 @@ function Board() {
     function getLatestGamestate() {
       const gameid = localStorage.getItem("gameid");
       fetch(axios.get(`http://localhost:4001/gamestate/get?gameid=${gameid}`).then((body) => {
-        console.log(body);
+        // console.log(body);
       }, (err) => {
         console.log("Error: ", err);
       }));
@@ -27,6 +29,22 @@ function Board() {
   }, []);
 
   function handleClick(i) {
+
+    // Check if board has been updated since the last player took their turn
+    // If board has not changed, do not let this user make changes
+    let gameid = localStorage.getItem("gameid");
+    axios.get(`http://localhost:4001/gamestate/get?gameid=${gameid}`).then((body) => {
+      console.log("Board: " + body.data.gameState.board);
+      console.log("Prev Squares: " + prevSquares);
+      if (body.data.gameState.board === prevSquares) {
+        console.log("Other player has not made their turn");
+        return;
+      }
+    }, (err) => {
+      console.log("Error: ", err);
+    });
+    // If board is changed, let them keep going
+
     if (calculateWinner(squares) || squares[i]) {
       return;
     }
@@ -43,10 +61,10 @@ function Board() {
     // call to update gamestate every time we change the state
     const jsonBody = {
       gamename: "tic-tac-toe",
-      gameid: localStorage.getItem("gameid"),
+      gameid: gameid,
       gameState: {
-        board: squares,
-        playerTurn: xIsNext ? 0 : 1, // Player 0 has 'X' and Player 1 has 'O'
+        board: nextSquares,
+        playerTurn: xIsNext ? 'X' : 'O', // Player 0 has 'X' and Player 1 has 'O'
       }
     };
 
@@ -55,6 +73,15 @@ function Board() {
     }, (err) => {
       console.log("Error: ", err);
     });
+
+    // store board state in a variable
+    // GET call here
+    axios.get(`http://localhost:4001/gamestate/get?gameid=${gameid}`).then((body) => {
+        console.log(body);
+        setPrevSquares(body.data.gameState.board);
+      }, (err) => {
+        console.log("Error: ", err);
+      });
   }
 
   const winner = calculateWinner(squares);
@@ -73,18 +100,13 @@ function Board() {
 
       <div className="displayPlayers">
           <div className='player'>
-            <Player xIsNext={xIsNext} player="1" side="left"/>
+            <Player xIsNext={xIsNext} player="X" side="left"/>
           </div>
 
           <div className='player'>
-            <Player xIsNext={xIsNext} player="2" side="right"/> 
+            <Player xIsNext={xIsNext} player="O" side="right"/> 
           </div>
-          
-  
- 
-    
-        
-        
+
       </div>
       
    
