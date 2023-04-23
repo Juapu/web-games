@@ -8,7 +8,7 @@ import TicTacToeStart from './component/TicTacToeStart';
 
 function App() {
   return (
-  
+
     <Router>
       <Routes>
         <Route path="/" element={<Login />}/>
@@ -17,7 +17,7 @@ function App() {
         <Route path="tic-tac-toe-game" element={<TicTacToe />}/>
       </Routes>
     </Router>
-    
+
   );
 }
 
