@@ -8,6 +8,7 @@ import axios from 'axios';
 function Board() {
   const [xIsNext, setXIsNext] = useState(true);
   const [squares, setSquares] = useState(Array(9).fill(null));
+  const [playerTurn, setPlayerTurn] = useState('X');
 
   // Periodically retrieves latest board version from remote db
   useEffect(() => {
@@ -15,6 +16,7 @@ function Board() {
     function getLatestGamestate() {
       const gameid = localStorage.getItem("gameid");
       fetch(axios.get(`http://localhost:4001/gamestate/get?gameid=${gameid}`).then((body) => {
+        setPlayerTurn(body.data.gameState.playerTurn);
         setSquares(body.data.gameState.board);
         console.log(body);
       }, (err) => {
@@ -43,11 +45,13 @@ function Board() {
       return;
     }
     const nextSquares = squares.slice();
-    if (xIsNext) {
+    /*if (xIsNext) {
       nextSquares[i] = 'X';
     } else {
       nextSquares[i] = 'O';
-    }
+    } */
+    setPlayerTurn(playerTurn);
+    nextSquares[i] = playerTurn;
     setSquares(nextSquares);
     setXIsNext(!xIsNext);
 
