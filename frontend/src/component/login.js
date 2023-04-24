@@ -36,7 +36,7 @@ function Login(props) {
     console.log()
     e.preventDefault();
     console.log('switch')
-    navigate('/createAcc');
+    navigate('/create-account');
   }
 
 
