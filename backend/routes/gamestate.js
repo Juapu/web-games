@@ -88,7 +88,7 @@ router.put("/update", [],
 
         } catch (err) {
             console.log(err);
-            res.send({ message: "Error with updating gamestate"});
+            res.status(500).json({ message: "Error with updating gamestate"});
         }
     }
 );

@@ -30,21 +30,38 @@ function Board() {
 
   function handleClick(i) {
 
+    // Not sure if the types are getting weird bc of the db, manual equality check
+    function isEqual(board, prevSquares) {
+
+      if (board == null && prevSquares != null) {
+        return false;
+      }
+
+      for (var i = 0; i < 9; i++) {
+        if (board[i] != prevSquares[i]) {
+          return false;
+        }
+      }
+      return true;
+    }
+
     // Check if board has been updated since the last player took their turn
     // If board has not changed, do not let this user make changes
     let gameid = localStorage.getItem("gameid");
     axios.get(`http://localhost:4001/gamestate/get?gameid=${gameid}`).then((body) => {
       console.log("Board: " + body.data.gameState.board);
       console.log("Prev Squares: " + prevSquares);
-      if (body.data.gameState.board === prevSquares) {
+      if (isEqual(body.data.gameState.board, prevSquares) && body.data.gameState.board != null) {
         console.log("Other player has not made their turn");
         return;
+      } else {
+        setPrevSquares(body.data.gameState.board);
       }
     }, (err) => {
       console.log("Error: ", err);
     });
-    // If board is changed, let them keep going
 
+    // End condition
     if (calculateWinner(squares) || squares[i]) {
       return;
     }
@@ -76,12 +93,12 @@ function Board() {
 
     // store board state in a variable
     // GET call here
-    axios.get(`http://localhost:4001/gamestate/get?gameid=${gameid}`).then((body) => {
+    /* axios.get(`http://localhost:4001/gamestate/get?gameid=${gameid}`).then((body) => {
         console.log(body);
         setPrevSquares(body.data.gameState.board);
       }, (err) => {
         console.log("Error: ", err);
-      });
+      }); */
   }
 
   const winner = calculateWinner(squares);

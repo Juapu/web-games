@@ -9,7 +9,7 @@ function TicTacToe() {
   const jsonBody = {
     gamename: "tic-tac-toe",
     gameState: {
-      board: [],
+      board: Array(9).fill(null),
       playerTurn: 'X', 
     },
   };
