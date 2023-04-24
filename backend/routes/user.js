@@ -41,11 +41,16 @@ router.post(
         });
       }
 
+      const wins = 0;
+      const losses = 0;
+      const currentGameID = '';
+
       user = new User({
         username,
         password,
         wins,
         losses,
+        currentGameID
       });
 
       const salt = await bcrypt.genSalt(10);

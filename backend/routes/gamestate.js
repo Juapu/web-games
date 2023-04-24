@@ -7,6 +7,7 @@ const bodyParser = require('body-parser');
 const auth = require('../middleware/auth')
 
 const Gamestate = require("../models/Gamestate");
+const User = require("../models/User");
 
 /**
  * @method - POST
@@ -48,7 +49,16 @@ router.post("/create",
                 serializedgame,
                 gameid
             });
+
+            const user1 = await User.findById(req.body.userid1);
+            const user2 = await User.findById(req.body.userid2);
+
+            user1.currentGameID = game.gameid;
+            user2.currentGameID = game.gameid;
+
             await game.save();
+            await user1.save();
+            await user2.save();
 
             res.status(201).send({ 
                 message: "Gamestate created",
