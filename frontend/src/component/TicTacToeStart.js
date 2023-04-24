@@ -4,27 +4,62 @@ import Board from './board';
 import iconIMG from '../images/tic-tac-toe.png';
 import computerIMG from '../images/computer.png';
 import { Link, useNavigate } from 'react-router-dom';
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useState } from 'react';
+import axios from 'axios';
+
 
 function TicTacToe() {
 
-  const username1 = null;
-  const username2Ref = useRef();
+  var username2Ref = useRef("");
+  const navigate = useNavigate();
 
-  const user1 = null;
-  axios.get(`http://localhost:4001/user/get`).then((body) => {
+  var [username1, setUsername1] = useState();
+  var [curGameId, setCurGameId] = useState(null);
+
+  axios.get(`http://localhost:4001/user/get`, {
+    headers: {
+      'token': localStorage.getItem("token"),
+    }
+  }).then((body) => {
         // console.log(body);
-        user1 = body.data.user;
-        username1 = body.data.user.username;
+        console.log(body.data);
+        //user1 = body.data;
+        //curGameId = body.data.currentGameID;
+        setCurGameId(body.data.currentGameID);
+        console.log("Ran");
+        setUsername1(body.data.username);
+        //username1 = body.data.username;
       }, (err) => {
         console.log("Error: ", err);
   });
 
   // Check if 1st user already has a gameid
-  if (user1.currentGameID != null) {
+  if (curGameId !== null) {
     navigate('/tic-tac-toe-game');
   }
 
+  /*var [user1, setUser1] = useState();
+  var [curGameId, setCurGameId] = useState();
+
+  useEffect(() => {
+    if (user1 && user1.currentGameID !== null) {
+      navigate('/tic-tac-toe-game');
+    }
+  }, [user1]);
+
+  axios.get(`http://localhost:4001/user/get`, {
+      headers: {
+        'token': localStorage.getItem("token"),
+      }
+    }).then((body) => {
+          console.log(body.data);
+          user1 = body.data;
+          curGameId = body.data.currentGameID;
+          username1 = body.data.username;
+        }, (err) => {
+          console.log("Error: ", err);
+    }); */
+  
   const jsonBody = {
     gamename: "tic-tac-toe",
     gameState: {
@@ -34,7 +69,7 @@ function TicTacToe() {
     username1: username1,
     username2: username2Ref.current.value,
   };
-  
+
   axios.post(`http://localhost:4001/gamestate/create`, jsonBody).then((body) => {
     localStorage.setItem("gameid", body.data.gameid);
     console.log(body.data.gameid);

@@ -11,10 +11,10 @@ function Login(props) {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
+    /*const token = localStorage.getItem('token');
     if (token) {
       navigate('/tic-tac-toe');
-    }
+    }*/
   }, []);
 
   const token = localStorage.getItem("token");

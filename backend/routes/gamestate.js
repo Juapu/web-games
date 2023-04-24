@@ -50,8 +50,8 @@ router.post("/create",
                 gameid
             });
 
-            const user1 = await User.findOne(req.body.username1);
-            const user2 = await User.findOne(req.body.username2);
+            const user1 = await User.findOne({ username: req.body.username1});
+            const user2 = await User.findOne({ username: req.body.username2});
 
             user1.currentGameID = game.gameid;
             user2.currentGameID = game.gameid;
