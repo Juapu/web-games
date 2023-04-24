@@ -6,90 +6,110 @@ import axios from 'axios';
 
 
 function Board() {
-  const [xIsNext, setXIsNext] = useState(true);
+  // const [xIsNext, setXIsNext] = useState(true);
+  const gameid = localStorage.getItem("gameid");
   const [squares, setSquares] = useState(Array(9).fill(null));
-  const [playerTurn, setPlayerTurn] = useState('X');
+  const [playerUsername, setPlayerUsername] = useState("X");
+  const [playerTurn, setPlayerTurn] = useState("");
+  const [currentTurn, setCurrentTurn] = useState("X");
+  const [status, setStatus] = useState("");
+
+  // Authenticate user to retrieve username
+  axios.get(`http://localhost:4001/user/get`, {
+    headers: {
+      'token': localStorage.getItem("token"),
+    }
+  }).then((body) => {
+        console.log(body.data);
+        setPlayerUsername(body.data.username);
+      }, (err) => {
+        console.log("Error: ", err);
+  });
+
+  // fetch current gamestate to assign a playerTurn
+  fetch(axios.get(`http://localhost:4001/gamestate/get?gameid=${gameid}`).then((body) => {
+        if (body.data.username1 === playerUsername) {
+          setPlayerTurn('X');
+        } else if (body.data.username2 === playerUsername) {
+          setPlayerTurn('O');
+        } else {
+          console.error("You are not playing in this game")
+        }
+      }, (err) => {
+        console.log("Error: ", err);
+      }));
 
   // Periodically retrieves latest board version from remote db
   useEffect(() => {
-
     function getLatestGamestate() {
-      const gameid = localStorage.getItem("gameid");
       fetch(axios.get(`http://localhost:4001/gamestate/get?gameid=${gameid}`).then((body) => {
-        setPlayerTurn(body.data.gameState.playerTurn);
+        setCurrentTurn(body.data.gameState.playerTurn);
         setSquares(body.data.gameState.board);
         console.log(body);
       }, (err) => {
         console.log("Error: ", err);
       }));
     }
-    const interval = setInterval(() => getLatestGamestate(), 4000); // 4 seconds
+    const interval = setInterval(() => getLatestGamestate(), 1000); // 4 seconds
     return () => {
       clearInterval(interval);
     }
-  }, []);
+  }, [gameid]);
 
   function handleClick(i) {
-
-    // Check if board has been updated since the last player took their turn
-    // If board has not changed, do not let this user make changes
     let gameid = localStorage.getItem("gameid");
+    // Check if board has been updated since the last player took their turn
     axios.get(`http://localhost:4001/gamestate/get?gameid=${gameid}`).then((body) => {
       console.log("Board: " + body.data.gameState.board);
+      setCurrentTurn(body.data.gameState.playerTurn);
+      setSquares(body.data.gameState.board);
     }, (err) => {
       console.log("Error: ", err);
     });
-    // If board is changed, let them keep going
 
-    if (calculateWinner(squares) || squares[i]) {
+    // If not the user's turn, do not let them make a move
+    if (currentTurn !== playerTurn) {
+      console.log("not your turn silly~!");
       return;
     }
-    const nextSquares = squares.slice();
-    /*if (xIsNext) {
-      nextSquares[i] = 'X';
-    } else {
-      nextSquares[i] = 'O';
-    } */
-    setPlayerTurn(playerTurn);
-    nextSquares[i] = playerTurn;
-    setSquares(nextSquares);
-    setXIsNext(!xIsNext);
+
+    // If game has been won, don't let another move be played
+    if (calculateWinner(squares)) {
+      return;
+    }
 
     //TODO Check valid move before calling?
-    // call to update gamestate every time we change the state
+
+    // Update local gamestate
+    const nextSquares = squares.slice();
+    nextSquares[i] = currentTurn;
+    setSquares(nextSquares);
+    setCurrentTurn(currentTurn === 'X' ? 'O' : 'X')
+
+    // Update remote gamestate
     const jsonBody = {
       gamename: "tic-tac-toe",
       gameid: gameid,
       gameState: {
         board: nextSquares,
-        playerTurn: xIsNext ? 'X' : 'O', // Player 0 has 'X' and Player 1 has 'O'
+        playerTurn: currentTurn, // Player 0 has 'X' and Player 1 has 'O'
       }
     };
-
     axios.put(`http://localhost:4001/gamestate/update`, jsonBody).then((body) => {
+      //TODO: implement authentication for gamestate updates
       console.log(body);
     }, (err) => {
       console.log("Error: ", err);
     });
 
-    // store board state in a variable
-    // GET call here
-    /* axios.get(`http://localhost:4001/gamestate/get?gameid=${gameid}`).then((body) => {
-        console.log(body);
-        setPrevSquares(body.data.gameState.board);
-      }, (err) => {
-        console.log("Error: ", err);
-      }); */
+    // Update Status UI
+    const winner = calculateWinner(nextSquares);
+    if (winner) {
+      setStatus('Winner: ' + winner);
+    } else {
+      setStatus('Next player: ' + (currentTurn));
+    }
   }
-
-  const winner = calculateWinner(squares);
-  let status;
-  if (winner) {
-    status = 'Winner: ' + winner;
-  } else {
-    status = 'Next player: ' + (xIsNext ? 'X' : 'O');
-  }
-
 
   return (
     <>
@@ -98,11 +118,11 @@ function Board() {
 
       <div className="displayPlayers">
           <div className='player'>
-            <Player xIsNext={xIsNext} player="X" side="left"/>
+            <Player xIsNext={currentTurn === 'X'} player="X" side="left"/>
           </div>
 
           <div className='player'>
-            <Player xIsNext={xIsNext} player="O" side="right"/> 
+            <Player xIsNext={currentTurn === 'X'} player="O" side="right"/> 
           </div>
 
       </div>
