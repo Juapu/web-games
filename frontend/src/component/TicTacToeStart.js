@@ -56,9 +56,11 @@ function TicTacToe() {
   }
 
   // Check if 1st user already has a gameid
-  /* if (curGameId !== null) {
+  console.log(curGameId);
+  if (curGameId) {
+    localStorage.setItem("gameid", curGameId);
     navigate('/tic-tac-toe-game');
-  } */
+  }
 
   /*var [user1, setUser1] = useState();
   var [curGameId, setCurGameId] = useState();
@@ -104,11 +106,11 @@ function TicTacToe() {
       <h1>Tic Tac Toe</h1>
       <img src={iconIMG} alt="Tic Tac Toe"></img>
       <Link to="/tic-tac-toe-game">
-        <button>Play Online</button>
+        <button onClick = {(e) => createGame(e)}>Play Online</button>
       </Link>
       <label htmlFor="username">Opponent Username:</label>
       <input type="text" id="username" ref={username2Ref} />
-      <button onClick = {(e) => createGame(e)}>Challenge</button>
+      <button>Challenge</button>
     </div>
   );
 }

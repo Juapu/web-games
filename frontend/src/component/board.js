@@ -15,7 +15,8 @@ function Board() {
     function getLatestGamestate() {
       const gameid = localStorage.getItem("gameid");
       fetch(axios.get(`http://localhost:4001/gamestate/get?gameid=${gameid}`).then((body) => {
-        // console.log(body);
+        setSquares(body.data.gameState.board);
+        console.log(body);
       }, (err) => {
         console.log("Error: ", err);
       }));
