@@ -29,14 +29,36 @@ function TicTacToe() {
         console.log("Ran");
         setUsername1(body.data.username);
         //username1 = body.data.username;
+
       }, (err) => {
         console.log("Error: ", err);
   });
 
-  // Check if 1st user already has a gameid
-  if (curGameId !== null) {
-    navigate('/tic-tac-toe-game');
+  function createGame() {
+    const jsonBody = {
+      gamename: "tic-tac-toe",
+      gameState: {
+        board: Array(9).fill(null),
+        playerTurn: 'X', 
+      },
+      username1: username1,
+      username2: username2Ref.current.value,
+    };
+
+    console.log(jsonBody);
+  
+    axios.post(`http://localhost:4001/gamestate/create`, jsonBody).then((body) => {
+      localStorage.setItem("gameid", body.data.gameid);
+      console.log(body.data.gameid);
+    }, (err) => {
+      console.log("Error: ", err);
+    });
   }
+
+  // Check if 1st user already has a gameid
+  /* if (curGameId !== null) {
+    navigate('/tic-tac-toe-game');
+  } */
 
   /*var [user1, setUser1] = useState();
   var [curGameId, setCurGameId] = useState();
@@ -60,7 +82,7 @@ function TicTacToe() {
           console.log("Error: ", err);
     }); */
   
-  const jsonBody = {
+  /* const jsonBody = {
     gamename: "tic-tac-toe",
     gameState: {
       board: Array(9).fill(null),
@@ -75,7 +97,7 @@ function TicTacToe() {
     console.log(body.data.gameid);
   }, (err) => {
     console.log("Error: ", err);
-  });
+  }); */
 
   return (
     <div className="tic-tac-toe">
@@ -85,7 +107,8 @@ function TicTacToe() {
         <button>Play Online</button>
       </Link>
       <label htmlFor="username">Opponent Username:</label>
-      <input type="text" id="username" ref={username2Ref}/>
+      <input type="text" id="username" ref={username2Ref} />
+      <button onClick = {(e) => createGame(e)}>Challenge</button>
     </div>
   );
 }
