@@ -13,8 +13,8 @@ function App() {
       <Routes>
         <Route path="/" element={<Login />}/>
         <Route path="/create-account" element={<CreateAccount />}/>
-        <Route path="tic-tac-toe" element={<TicTacToeStart />}/>
-        <Route path="tic-tac-toe-game" element={<TicTacToe />}/>
+        <Route path="/tic-tac-toe" element={<TicTacToeStart />}/>
+        <Route path="/tic-tac-toe-game" element={<TicTacToe />}/>
       </Routes>
     </Router>
 
