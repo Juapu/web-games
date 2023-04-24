@@ -21,6 +21,7 @@ const CreateAccount = () => {
           localStorage.setItem('token', token);
           navigate('/tic-tac-toe');
         },(err) => {
+          console.log(err);
           console.log("Failed to create account");
         })
 

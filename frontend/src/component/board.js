@@ -8,8 +8,6 @@ import axios from 'axios';
 function Board() {
   const [xIsNext, setXIsNext] = useState(true);
   const [squares, setSquares] = useState(Array(9).fill(null));
-  // variable storing last board state
-  const [prevSquares, setPrevSquares] = useState(Array(9).fill(null));
 
   // Periodically retrieves latest board version from remote db
   useEffect(() => {
@@ -35,11 +33,6 @@ function Board() {
     let gameid = localStorage.getItem("gameid");
     axios.get(`http://localhost:4001/gamestate/get?gameid=${gameid}`).then((body) => {
       console.log("Board: " + body.data.gameState.board);
-      console.log("Prev Squares: " + prevSquares);
-      if (body.data.gameState.board === prevSquares) {
-        console.log("Other player has not made their turn");
-        return;
-      }
     }, (err) => {
       console.log("Error: ", err);
     });
@@ -76,12 +69,12 @@ function Board() {
 
     // store board state in a variable
     // GET call here
-    axios.get(`http://localhost:4001/gamestate/get?gameid=${gameid}`).then((body) => {
+    /* axios.get(`http://localhost:4001/gamestate/get?gameid=${gameid}`).then((body) => {
         console.log(body);
         setPrevSquares(body.data.gameState.board);
       }, (err) => {
         console.log("Error: ", err);
-      });
+      }); */
   }
 
   const winner = calculateWinner(squares);

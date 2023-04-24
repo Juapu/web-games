@@ -148,6 +148,7 @@ router.post(
     }
   }
 );
+
 router.put("/update-user", auth, async (req, res) => {
     try {
       const response = await User.updateOne(req.user.id, req.body);
@@ -156,5 +157,33 @@ router.put("/update-user", auth, async (req, res) => {
       res.send({ message: "There was an error with updating your information." });
     }
   });
+
+/**
+ * @method - GET
+ * @description - Get LoggedIn User
+ * @param - /user/get
+ */
+
+router.get("/get", auth, async (req, res) => {
+  try {
+    // request.user is getting fetched from Middleware after token authentication
+    const user = await User.findById(req.user.id);
+    res.json(user);
+  } catch (e) {
+    res.send({ message: "Error in Fetching user" });
+  }
+}
+);
+
+router.get("/get-second-user", [], async (req, res) => {
+  try {
+    // request.user is getting fetched from Middleware after token authentication
+    const user = await User.findById(req.user.id);
+    res.json(user);
+  } catch (e) {
+    res.send({ message: "Error in Fetching user" });
+  }
+}
+);
 
 module.exports = router;
