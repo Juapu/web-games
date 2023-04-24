@@ -1,35 +1,41 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect} from 'react';
 import { Form, Button } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import '../stylesheets/Login.css';
 import axios from 'axios'
 
 function Login(props) {
+
   const usernameRef = useRef();
   const passwordRef = useRef();
   const navigate = useNavigate();
 
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      navigate('/tic-tac-toe');
+    }
+  }, []);
 
+  const token = localStorage.getItem("token");
   const loginAttempt = e => {
     e.preventDefault();
     console.log("login attempt")
+    console.log(usernameRef.current.value)
+    console.log(passwordRef.current.value)
     const uName = usernameRef.current.value;
     const pwd = passwordRef.current.value;
     axios.post('http://localhost:4001/user/login', {
         username: uName,
         password: pwd
     }).then((result) => {
-            if (result.data.message === "success") {
-                console.log("Logged in! Token: " + result.data.token);
-                localStorage.setItem('token', result.data.token)
-                localStorage.setItem('user', JSON.stringify(result.data.user))
-                navigate('/tic-tac-toe');
-            } else {
-                console.log("Did not log in");
-            }},(err) => {
-                console.log("Did not log in");
-            }
-        )
+          console.log("Logged in! Token: " + result.data.token);
+          localStorage.setItem('token', result.data.token);
+          navigate('/tic-tac-toe');
+        },(err) => {
+          console.log("Failed to log in");
+        }
+      )
   };
 
   const switchPage = (e) => {

@@ -12,30 +12,31 @@ const CreateAccount = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    try {
-      const response = await axios.post('https://localhost:4001/user', {
-        username,
-        password,
-      });
-      console.log("sending request:", username, password);
-      
-      //Store token to local storage
-      let token = response.data.token;
-      localStorage.setItem('token', token);
+    axios.post('http://localhost:4001/user/signup', {
+        username: username,
+        password: password
+    }).then((result) => {
+          let token = result.data.token;
+          console.log("Created Account! Token: " + token)
+          localStorage.setItem('token', token);
+          navigate('/tic-tac-toe');
+        },(err) => {
+          console.log("Failed to create account");
+        })
 
       // Redirect based off of gameID presence
-      let gameID = URLSearchParams(window.location.search).get('gameID');
-      if (!gameID) {
-        navigate('/games');
-      }
-      else {
-        // TODO: ensure correct routes with backend 
-        navigate(`/play?gameid=${gameID}`);
-      }
-    } catch (error) {
+      //let gameID = URLSearchParams(window.location.search).get('gameID');
+      //if (!gameID) {
+        //navigate('/games');
+      //}
+      //else {
+        // TODO: ensure correct routes with backend
+        //navigate(`/play?gameid=${gameID}`);
+      //}
+    //} catch (error) {
       // setError(error.response.data.message);
-      console.log(error);
-    }
+      //console.log(error);
+    //}
   };
 
   return(
