@@ -7,36 +7,41 @@ import axios from 'axios';
 
 function Board() {
   // const [xIsNext, setXIsNext] = useState(true);
-  const gameid = localStorage.getItem("gameid");
+  const [gameid, setGameid] = useState("");
   const [squares, setSquares] = useState(Array(9).fill(null));
   const [playerUsername, setPlayerUsername] = useState("");
   const [playerTurn, setPlayerTurn] = useState("");
   const [currentTurn, setCurrentTurn] = useState("X");
   const [status, setStatus] = useState("");
 
-  // Authenticate user to retrieve username
-  axios.get(`http://localhost:4001/user/get`, {
-    headers: {
-      'token': localStorage.getItem("token"),
-    }
-  }).then((body) => {
-        setPlayerUsername(body.data.username);
-      }, (err) => {
-        console.log("Error: ", err);
-  });
+  useEffect(() => {
+    // Authenticate user to retrieve username
+    axios.get(`http://localhost:4001/user/get`, {
+      headers: {
+        'token': localStorage.getItem("token"),
+      }
+    }).then((body) => {
+      setPlayerUsername(body.data.username);
+    }, (err) => {
+      console.log("Error: ", err);
+    });
+    setGameid(localStorage.getItem("gameid"));
+  }, []);
 
-  // fetch current gamestate to assign a playerTurn
-  fetch(axios.get(`http://localhost:4001/gamestate/get?gameid=${gameid}`).then((body) => {
-        if (body.data.gameState.username1 === playerUsername) {
-          setPlayerTurn('X');
-        } else if (body.data.gameState.username2 === playerUsername) {
-          setPlayerTurn('O');
-        } else {
-          console.error([body.data.gameState.username1, body.data.gameState.username2, playerUsername]);
-        }
-      }, (err) => {
-        console.log("Error: ", err);
-      }));
+  useEffect(() => {
+    // fetch current gamestate to assign a playerTurn
+    axios.get(`http://localhost:4001/gamestate/get?gameid=${gameid}`).then((body) => {
+      if (body.data.gameState.username1 === playerUsername) {
+        setPlayerTurn('X');
+      } else if (body.data.gameState.username2 === playerUsername) {
+        setPlayerTurn('O');
+      } else {
+        console.error([body.data.gameState.username1, body.data.gameState.username2, playerUsername]);
+      }
+    }, (err) => {
+      console.log("Error: ", err);
+    });
+  }, [playerUsername, gameid]);
 
   // Periodically retrieves latest board version from remote db
   useEffect(() => {
@@ -56,7 +61,6 @@ function Board() {
   }, [gameid]);
 
   function handleClick(i) {
-    let gameid = localStorage.getItem("gameid");
     // Check if board has been updated since the last player took their turn
     axios.get(`http://localhost:4001/gamestate/get?gameid=${gameid}`).then((body) => {
       console.log("Board: " + body.data.gameState.board);
