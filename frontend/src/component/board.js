@@ -9,7 +9,7 @@ function Board() {
   // const [xIsNext, setXIsNext] = useState(true);
   const gameid = localStorage.getItem("gameid");
   const [squares, setSquares] = useState(Array(9).fill(null));
-  const [playerUsername, setPlayerUsername] = useState("X");
+  const [playerUsername, setPlayerUsername] = useState("");
   const [playerTurn, setPlayerTurn] = useState("");
   const [currentTurn, setCurrentTurn] = useState("X");
   const [status, setStatus] = useState("");
@@ -20,7 +20,6 @@ function Board() {
       'token': localStorage.getItem("token"),
     }
   }).then((body) => {
-        console.log(body.data);
         setPlayerUsername(body.data.username);
       }, (err) => {
         console.log("Error: ", err);
@@ -28,12 +27,12 @@ function Board() {
 
   // fetch current gamestate to assign a playerTurn
   fetch(axios.get(`http://localhost:4001/gamestate/get?gameid=${gameid}`).then((body) => {
-        if (body.data.username1 === playerUsername) {
+        if (body.data.gameState.username1 === playerUsername) {
           setPlayerTurn('X');
-        } else if (body.data.username2 === playerUsername) {
+        } else if (body.data.gameState.username2 === playerUsername) {
           setPlayerTurn('O');
         } else {
-          console.error("You are not playing in this game")
+          console.error([body.data.gameState.username1, body.data.gameState.username2, playerUsername]);
         }
       }, (err) => {
         console.log("Error: ", err);
@@ -50,7 +49,7 @@ function Board() {
         console.log("Error: ", err);
       }));
     }
-    const interval = setInterval(() => getLatestGamestate(), 1000); // 4 seconds
+    const interval = setInterval(() => getLatestGamestate(), 1000); // 1 second
     return () => {
       clearInterval(interval);
     }
