@@ -30,6 +30,10 @@ router.post("/create",
         const gameid = uuidv4();
         // Serialize gameState
         const gameState = req.body.gameState;
+        gameState["username1"] = req.body.username1;
+        gameState["username2"] = req.body.username2; 
+        
+        console.log(gameState);
         const serializedgame = JSON.stringify(gameState); // OK since no functions serialized
 
         //TODO Update the User games to append the game id
