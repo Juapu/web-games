@@ -49,6 +49,7 @@ function TicTacToe() {
   
     axios.post(`http://localhost:4001/gamestate/create`, jsonBody).then((body) => {
       localStorage.setItem("gameid", body.data.gameid);
+      localStorage.setItem("player", "X");
       console.log(body.data.gameid);
     }, (err) => {
       console.log("Error: ", err);
@@ -59,6 +60,7 @@ function TicTacToe() {
   console.log(curGameId);
   if (curGameId) {
     localStorage.setItem("gameid", curGameId);
+    localStorage.setItem("player", "O");
     navigate('/tic-tac-toe-game');
   }
 

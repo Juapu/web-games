@@ -11,7 +11,7 @@ function Board() {
   const [squares, setSquares] = useState(Array(9).fill(null));
   const [playerUsername, setPlayerUsername] = useState("");
   const [localPlayerTurn, setLocalPlayerTurn] = useState("");
-  const [playerTurn, setPlayerTurn] = useState("X");
+  const [playerTurn, setPlayerTurn] = useState(localStorage.getItem("player"));
   const [status, setStatus] = useState("");
 
   useEffect(() => {
@@ -70,10 +70,10 @@ function Board() {
     });
 
     // If not the user's turn, do not let them make a move
-    if (playerTurn !== localPlayerTurn) {
+    /*if (playerTurn !== localPlayerTurn) {
       console.log("not your turn silly~!");
       return;
-    }
+    } */
 
     // If game has been won, don't let another move be played
     if (calculateWinner(squares)) {
@@ -86,7 +86,7 @@ function Board() {
     const nextSquares = squares.slice();
     nextSquares[i] = playerTurn;
     setSquares(nextSquares);
-    setPlayerTurn(playerTurn === "X" ? "O" : "X", () => {
+    /*setPlayerTurn(playerTurn === "X" ? "O" : "X", () => {
       console.log("Set playerTurn to: ", playerTurn);
 
       // Update remote gamestate
@@ -116,7 +116,7 @@ function Board() {
       } else {
         setStatus('Next player: ' + (playerTurn));
       }
-    });
+    }); */
   }
 
   return (
