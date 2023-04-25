@@ -46,7 +46,7 @@ function Board() {
   useEffect(() => {
     function getLatestGamestate() {
       fetch(axios.get(`http://localhost:4001/gamestate/get?gameid=${gameid}`).then((body) => {
-        setPlayerTurn(body.data.gameState.playerTurn);
+        //setPlayerTurn(body.data.gameState.playerTurn);
         setSquares(body.data.gameState.board);
         console.log(body);
       }, (err) => {
@@ -63,7 +63,7 @@ function Board() {
     // Check if board has been updated since the last player took their turn
     axios.get(`http://localhost:4001/gamestate/get?gameid=${gameid}`).then((body) => {
       console.log("Board: " + body.data.gameState.board);
-      setPlayerTurn(body.data.gameState.playerTurn);
+      //setPlayerTurn(body.data.gameState.playerTurn);
       setSquares(body.data.gameState.board);
     }, (err) => {
       console.log("Error: ", err);
@@ -86,6 +86,30 @@ function Board() {
     const nextSquares = squares.slice();
     nextSquares[i] = playerTurn;
     setSquares(nextSquares);
+
+    const jsonBody = {
+      gamename: "tic-tac-toe",
+      gameid: gameid,
+      gameState: {
+        board: nextSquares,
+        playerTurn: playerTurn, // Player 0 has 'X' and Player 1 has 'O'
+      }
+    };
+
+    axios.put(`http://localhost:4001/gamestate/update`, jsonBody).then((body) => {
+      //TODO: implement authentication for gamestate updates
+      console.log(body);
+    }, (err) => {
+      console.log("Error: ", err);
+    });
+
+    const winner = calculateWinner(nextSquares);
+    if (winner) {
+      console.log("Winner Detected");
+      setStatus('Winner: ' + winner);
+    } else {
+      setStatus('Next player: ' + (playerTurn));
+    }
     /*setPlayerTurn(playerTurn === "X" ? "O" : "X", () => {
       console.log("Set playerTurn to: ", playerTurn);
 
