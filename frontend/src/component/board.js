@@ -108,16 +108,17 @@ function Board() {
     }, (err) => {
       console.log("Error: ", err);
     });
+  }
 
-    // Update Status UI
-    const winner = calculateWinner(nextSquares);
+  useEffect(() => {
+    const winner = calculateWinner(squares);
     if (winner) {
       console.log("Winner Detected");
       setStatus('Winner: ' + winner);
     } else {
       setStatus('Next player: ' + (playerTurn));
     }
-  }
+  }, [squares, playerTurn]);
 
   return (
     <>
