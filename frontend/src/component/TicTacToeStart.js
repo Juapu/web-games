@@ -105,12 +105,11 @@ function TicTacToe() {
     <div className="tic-tac-toe">
       <h1>Tic Tac Toe</h1>
       <img src={iconIMG} alt="Tic Tac Toe"></img>
+      <label htmlFor="username">Opponent Username:</label>
+      <input type="text" id="username" ref={username2Ref} />
       <Link to="/tic-tac-toe-game">
         <button onClick = {(e) => createGame(e)}>Play Online</button>
       </Link>
-      <label htmlFor="username">Opponent Username:</label>
-      <input type="text" id="username" ref={username2Ref} />
-      <button>Challenge</button>
     </div>
   );
 }
