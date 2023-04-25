@@ -32,7 +32,7 @@ router.post("/create",
         const gameState = req.body.gameState;
         gameState["username1"] = req.body.username1;
         gameState["username2"] = req.body.username2; 
-        
+
         console.log(gameState);
         const serializedgame = JSON.stringify(gameState); // OK since no functions serialized
 
@@ -131,6 +131,8 @@ router.get("/get", [check("gameid").not().isEmpty()],
             res.status(200).json({
                 gameState: gameState,
                 gameid: gameid,
+                username1: req.body.username1,
+                username2: req.body.username2,
             });
         } catch (e) {
             console.log(e);
