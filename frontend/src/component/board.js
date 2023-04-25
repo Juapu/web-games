@@ -10,8 +10,8 @@ function Board() {
   const gameid = localStorage.getItem("gameid");
   const [squares, setSquares] = useState(Array(9).fill(null));
   const [playerUsername, setPlayerUsername] = useState("");
-  const [playerTurn, setPlayerTurn] = useState("");
-  const [currentTurn, setCurrentTurn] = useState("X");
+  const [localPlayerTurn, setLocalPlayerTurn] = useState("");
+  const [playerTurn, setPlayerTurn] = useState("X");
   const [status, setStatus] = useState("");
 
   useEffect(() => {
@@ -31,9 +31,9 @@ function Board() {
     // fetch current gamestate to assign a playerTurn
     axios.get(`http://localhost:4001/gamestate/get?gameid=${gameid}`).then((body) => {
       if (body.data.gameState.username1 === playerUsername) {
-        setPlayerTurn('X');
+        setLocalPlayerTurn('X');
       } else if (body.data.gameState.username2 === playerUsername) {
-        setPlayerTurn('O');
+        setLocalPlayerTurn('O');
       } else {
         console.error([body.data.gameState.username1, body.data.gameState.username2, playerUsername]);
       }
@@ -46,7 +46,7 @@ function Board() {
   useEffect(() => {
     function getLatestGamestate() {
       fetch(axios.get(`http://localhost:4001/gamestate/get?gameid=${gameid}`).then((body) => {
-        setCurrentTurn(body.data.gameState.playerTurn);
+        setPlayerTurn(body.data.gameState.playerTurn);
         setSquares(body.data.gameState.board);
         console.log(body);
       }, (err) => {
@@ -63,14 +63,14 @@ function Board() {
     // Check if board has been updated since the last player took their turn
     axios.get(`http://localhost:4001/gamestate/get?gameid=${gameid}`).then((body) => {
       console.log("Board: " + body.data.gameState.board);
-      setCurrentTurn(body.data.gameState.playerTurn);
+      setPlayerTurn(body.data.gameState.playerTurn);
       setSquares(body.data.gameState.board);
     }, (err) => {
       console.log("Error: ", err);
     });
 
     // If not the user's turn, do not let them make a move
-    if (currentTurn !== playerTurn) {
+    if (playerTurn !== localPlayerTurn) {
       console.log("not your turn silly~!");
       return;
     }
@@ -84,9 +84,10 @@ function Board() {
 
     // Update local gamestate
     const nextSquares = squares.slice();
-    nextSquares[i] = currentTurn;
+    nextSquares[i] = playerTurn;
     setSquares(nextSquares);
-    setCurrentTurn(currentTurn === 'X' ? 'O' : 'X');
+    setPlayerTurn(playerTurn === 'X' ? 'O' : 'X');
+    console.log("Set playerTurn to: ", playerTurn)
 
     // Update remote gamestate
     const jsonBody = {
@@ -94,9 +95,12 @@ function Board() {
       gameid: gameid,
       gameState: {
         board: nextSquares,
-        playerTurn: currentTurn, // Player 0 has 'X' and Player 1 has 'O'
+        playerTurn: playerTurn, // Player 0 has 'X' and Player 1 has 'O'
       }
     };
+
+    console.log("Posting to database: ", jsonBody);
+
     axios.put(`http://localhost:4001/gamestate/update`, jsonBody).then((body) => {
       //TODO: implement authentication for gamestate updates
       console.log(body);
@@ -107,9 +111,10 @@ function Board() {
     // Update Status UI
     const winner = calculateWinner(nextSquares);
     if (winner) {
+      console.log("Winner Detected");
       setStatus('Winner: ' + winner);
     } else {
-      setStatus('Next player: ' + (currentTurn));
+      setStatus('Next player: ' + (playerTurn));
     }
   }
 
@@ -120,11 +125,11 @@ function Board() {
 
       <div className="displayPlayers">
           <div className='player'>
-            <Player xIsNext={currentTurn === 'X'} player="X" side="left"/>
+            <Player xIsNext={playerTurn === 'X'} player="X" side="left"/>
           </div>
 
           <div className='player'>
-            <Player xIsNext={currentTurn === 'X'} player="O" side="right"/> 
+            <Player xIsNext={playerTurn === 'X'} player="O" side="right"/> 
           </div>
 
       </div>
