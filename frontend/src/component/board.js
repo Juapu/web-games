@@ -86,37 +86,37 @@ function Board() {
     const nextSquares = squares.slice();
     nextSquares[i] = playerTurn;
     setSquares(nextSquares);
-    setPlayerTurn(playerTurn === "X" ? "O" : "X", () => {
-      console.log("Set playerTurn to: ", playerTurn);
+    const nextPlayerTurn = playerTurn === "X" ? "O" : "X";
+    setPlayerTurn(nextPlayerTurn)
+    console.log("Set playerTurn to: ", nextPlayerTurn);
 
-      // Update remote gamestate
-      const jsonBody = {
-        gamename: "tic-tac-toe",
-        gameid: gameid,
-        gameState: {
-          board: nextSquares,
-          playerTurn: playerTurn, // Player 0 has 'X' and Player 1 has 'O'
-        }
-      };
-
-      console.log("Posting to database: ", jsonBody);
-
-      axios.put(`http://localhost:4001/gamestate/update`, jsonBody).then((body) => {
-        //TODO: implement authentication for gamestate updates
-        console.log(body);
-      }, (err) => {
-        console.log("Error: ", err);
-      });
-
-      // Update Status UI
-      const winner = calculateWinner(nextSquares);
-      if (winner) {
-        console.log("Winner Detected");
-        setStatus('Winner: ' + winner);
-      } else {
-        setStatus('Next player: ' + (playerTurn));
+    // Update remote gamestate
+    const jsonBody = {
+      gamename: "tic-tac-toe",
+      gameid: gameid,
+      gameState: {
+        board: nextSquares,
+        playerTurn: nextPlayerTurn, // Player 0 has 'X' and Player 1 has 'O'
       }
+    };
+
+    console.log("Posting to database: ", jsonBody);
+
+    axios.put(`http://localhost:4001/gamestate/update`, jsonBody).then((body) => {
+      //TODO: implement authentication for gamestate updates
+      console.log(body);
+    }, (err) => {
+      console.log("Error: ", err);
     });
+
+    // Update Status UI
+    const winner = calculateWinner(nextSquares);
+    if (winner) {
+      console.log("Winner Detected");
+      setStatus('Winner: ' + winner);
+    } else {
+      setStatus('Next player: ' + (playerTurn));
+    }
   }
 
   return (
