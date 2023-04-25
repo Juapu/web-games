@@ -84,7 +84,7 @@ function Board() {
     const nextSquares = squares.slice();
     nextSquares[i] = currentTurn;
     setSquares(nextSquares);
-    setCurrentTurn(currentTurn === 'X' ? 'O' : 'X')
+    setCurrentTurn(currentTurn === 'X' ? 'O' : 'X');
 
     // Update remote gamestate
     const jsonBody = {
