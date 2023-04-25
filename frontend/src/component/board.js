@@ -7,7 +7,7 @@ import axios from 'axios';
 
 function Board() {
   // const [xIsNext, setXIsNext] = useState(true);
-  const [gameid, setGameid] = useState("");
+  const [gameid, setGameid] = useState(localStorage.getItem("gameid"));
   const [squares, setSquares] = useState(Array(9).fill(null));
   const [playerUsername, setPlayerUsername] = useState("");
   const [playerTurn, setPlayerTurn] = useState("");
@@ -25,7 +25,6 @@ function Board() {
     }, (err) => {
       console.log("Error: ", err);
     });
-    setGameid(localStorage.getItem("gameid"));
   }, []);
 
   useEffect(() => {
